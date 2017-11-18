@@ -21,6 +21,7 @@ public class Main {
     static ArrayList<Integer> fromNode = new ArrayList<Integer>();
     static ArrayList<Integer> toNode = new ArrayList<Integer>();
     static ArrayList<Integer> cost = new ArrayList<Integer>();
+    static int steps;
     static int vertices;
     static Graph g;
 
@@ -52,7 +53,7 @@ public class Main {
         addInfoToLists();
 
         //g = new Graph(vertices);
-        g = new Graph(6);
+        g = new Graph(8);
 
         //for (int i = 0; i < toNode.size(); i++) {
         //  g.addEdge(toNode.get(i), fromNode.get(i), cost.get(i));
@@ -63,63 +64,56 @@ public class Main {
         g.addEdge(4, 3, 5);
         g.addEdge(3, 5, 1);
 
+        g.addEdge(1, 6, 7);
+        g.addEdge(6, 7, 4);
+
         g.displayMatrix();
         System.out.println("");
-        DFS(g.adJ, 0,4);
+        DFS(g.adJ, 0, 3);
 
     }
 
-    static void DFS(int adjacency_matrix[][], int source,int destination) {
-        
-            int steps=0;
-            int pop=0;
-            Stack<Integer> stepStack = new Stack<>();
-            Stack<Integer> stack = new Stack<>();
-            int number_of_nodes = adjacency_matrix[source].length - 1;
-            int visited[] = new int[number_of_nodes + 1];
-            int element = source;
-            int i = source;
-            System.out.print(element + "\t");
-            visited[source] = 1;
-            stack.push(source);
-            while (!stack.isEmpty()) {
-                element = stack.peek();
-                i = element;
-                while (i <= number_of_nodes) {
-                    if (adjacency_matrix[element][i] == 1 && visited[i] == 0) {
-                        steps+=stepStack.push(g.costMatrix[element][i]);
-                        stack.push(i);
-                        visited[i] = 1;
-                        //steps+=g.costMatrix[stack.peek()][i];
-                        
-                        element = i;
-                       
-                        i = 1;
-                        System.out.print(element + "\t");
-                        //System.out.println("\nPeeked: "+stack.peek());
-                        
-                        steps+=stepStack.pop();
-                        //System.out.println("\nSteps:"+steps);
-                        continue;
-                    }
-                    i++;
+    static void DFS(int adjacency_matrix[][], int source, int destination) {
+
+        int steps = 0;
+        Stack<Integer> stepStack = new Stack<>();
+        Stack<Integer> nodeStack = new Stack<>();
+        int number_of_nodes = adjacency_matrix[source].length - 1;
+        int visited[] = new int[number_of_nodes + 1];
+        int element = source;
+        int i = source;
+        System.out.print(element + "\t");
+        visited[source] = 1;
+        nodeStack.push(source);
+
+        while (!nodeStack.isEmpty()) {
+            element = nodeStack.peek();
+            i = element;
+
+            while (i <= number_of_nodes) {
+
+                if (adjacency_matrix[element][i] == 1 && visited[i] == 0) {
+
+                    steps += stepStack.push(g.costMatrix[element][i]);
+                    nodeStack.push(i);
+
+                    visited[i] = 1;
+                    
+                    element = i;
+                    i = 1;
+                    System.out.print(element + "\t");
                 }
-              //pop= stack.pop();
-               stack.pop();
-              
-                //steps+=g.costMatrix[stack.pop()][stack.peek()];
-                /*System.out.println("\nPopped "+stack.pop());
-                if(!stack.isEmpty())
-                System.out.println("\nPeeked "+stack.peek());*/
-                
-              //  if(stack.size()>1){
-                   // steps+=g.costMatrix[stack.pop()][stack.peek()];
-                   // break;
-              //  }
-                
+
+                i++;
             }
-            System.out.println("\nTOTAL STEPS: "+steps);
-        
+
+            nodeStack.pop();
+            steps += stepStack.pop();
+
+        }
+
+        System.out.println("\nTOTAL STEPS: " + steps);
+
     }
 
     static void addInfoToLists() {
@@ -131,7 +125,7 @@ public class Main {
                 elements.add(line);
             }
         }
-        //vertices = Integer.parseInt(original.get(0));
+        vertices = Integer.parseInt(original.get(0));
         elements.remove(0);
         original.remove(0);
         for (int i = 0; i < elements.size(); i += 3) {
