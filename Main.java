@@ -26,9 +26,11 @@ public class Main {
     static int steps = 0;
     static int smallestNode;
     static ArrayList<Integer> visitedNodes = new ArrayList<Integer>();
+    static ArrayList<Integer> fromNodeSort = new ArrayList<Integer>();
+    static ArrayList<Integer> toNodeSort = new ArrayList<Integer>();
 
     public static void main(String args[]) throws FileNotFoundException {
-        
+
         Scanner usIn = new Scanner(new File("lab.txt"));
         Scanner userIn = new Scanner(System.in);
 
@@ -49,14 +51,14 @@ public class Main {
         }
         usIn.close();
         addInfoToLists();
-        ArrayList<Integer> fromNodeSort = fromNode;
-        //Collections.sort(fromNodeSort);
-        ArrayList<Integer> toNodeSort = toNode;
-        //Collections.sort(toNodeSort);
-        if(toNodeSort.get(0)<fromNodeSort.get(0))
-            smallestNode=toNodeSort.get(0);
-        else
-            smallestNode=fromNodeSort.get(0);
+
+        Collections.sort(fromNodeSort);
+        Collections.sort(toNodeSort);
+        if (toNodeSort.get(0) < fromNodeSort.get(0)) {
+            smallestNode = toNodeSort.get(0);
+        } else {
+            smallestNode = fromNodeSort.get(0);
+        }
 
         //g = new Graph(vertices);
         g = new Graph(vertices);
@@ -64,102 +66,117 @@ public class Main {
         for (int i = 0; i < toNode.size(); i++) {
             g.addEdge(fromNode.get(i), toNode.get(i), cost.get(i));
         }
-        /*g.addEdge(0, 1, 6);
-        g.addEdge(1, 2, 2);
-        g.addEdge(0, 4, 3);
-        g.addEdge(4, 3, 5);
-        g.addEdge(3, 5, 1);
-        
-        g.addEdge(1, 6, 7);
-        g.addEdge(6, 7, 4);*/
 
-        //g.displayMatrix();
-        //System.out.println();
-        
-        
-        
-        
         long start = System.nanoTime();
-        DFS(g.getAdjacencyMatrix(), 10, 13);
-        long end = System.nanoTime();
-        
-        
-        
-        
-        //System.out.println(steps);
-        //System.out.println(visitedNodes);
-
-        String output = "";
-        for (int i = 0; i < visitedNodes.size(); i++) {
-            if (i != visitedNodes.size() - 1) {
-                output += visitedNodes.get(i) + ", ";
-            } else {
-                output += "and " + visitedNodes.get(i);
+        if (foundNode()) {
+            long end = System.nanoTime();
+            String output = "";
+            for (int i = 0; i < visitedNodes.size(); i++) {
+                if (i != visitedNodes.size() - 1) {
+                    output += visitedNodes.get(i) + ", ";
+                } else {
+                    output += "and " + visitedNodes.get(i);
+                }
             }
+
+            System.out.println("Me smash adventurers! Me find them after searching rooms " + output + "!\n"
+                    + "Me have Strength +8 but still me non-violently usher puny invaders out of me home! Me pacifist! Me only take " + steps + " steps! Moo!\n"
+                    + "\nMe find adventurers in " + (end - start) / 1000000.0 + " milliseconds! Me the fastest Minotaur alive!");
+        } else {
+            long end = System.nanoTime();
+            String output = "";
+            for (int i = 0; i < visitedNodes.size(); i++) {
+                if (i != visitedNodes.size() - 1) {
+                    output += visitedNodes.get(i) + ", ";
+                } else {
+                    output += "and " + visitedNodes.get(i);
+                }
+            }
+            System.out.println("Me no find adventurers. Me bring shame to me family.\nMe searched rooms " + output + ". Me took " + steps + " steps.\n\nMe walked around labyrinth for "
+                    + (end - start) / 1000000.0 + " milliseconds but me no find adventurers.");
         }
-        System.out.println("Me smash adventurers! Me find them after searching rooms " + output + "!\n"
-                + "Me have Strength +8 but still me non-violently usher puny invaders out of me home! Me pacifist! Me only take " + steps + " steps! Moo!");
-        System.out.println("\nMe find adventurers in " + (end - start) / 1000000.0 + " milliseconds! Me the fastest Minotaur alive!");
 
     }
 
-    static void DFS(int adjacency_matrix[][], int source, int destination) {
+    public static boolean foundNode() {
+        return foundNode(fromNode.get(0), 13);
+    }
 
-        //int steps = 0;
-        Stack<Integer> stepStack = new Stack<>();
-        Stack<Integer> nodeStack = new Stack<>();
+    private static boolean foundNode(int source, int destination) {
+        Stack<Integer> stepStack = new Stack<Integer>();
+        Stack<Integer> nodeStack = new Stack<Integer>();
         int visited[] = new int[vertices + 1];
         int nodeNumber = source;
         int i = source;
         visitedNodes.add(i);
-        
+
         visited[source] = 1;
         nodeStack.push(source);
         OUTER:
         while (!nodeStack.isEmpty()) {
             nodeNumber = nodeStack.peek();
             i = nodeNumber;
-            while (i >= smallestNode-1) {
+            if (source == 0) {
+                while (i > smallestNode - 1) {//ERROR IF START AT ZERO. ELSE WORKS GOOD. IF REMOVE EQUALS SIGN, THEN ZERO WILL NOT BE PRINTED IF NOT STARTING AT ZERO
+                    if (g.isConnected(nodeNumber, i) && visited[i] == 0) {
+                        steps += stepStack.push(g.getCostMatrix(nodeNumber, i));
+                        nodeStack.push(i);
 
-                if (adjacency_matrix[nodeNumber][i] == 1 && visited[i] == 0) {
-                    steps+=stepStack.push(g.getCostMatrix(nodeNumber, i));
-                    nodeStack.push(i);
+                        visited[i] = 1;
+                        nodeNumber = i;
+                        smallestNode = 1;
 
-                    visited[i] = 1;
-                    nodeNumber = i;
-                    smallestNode = 1;
-                    //System.out.print(element + "\t");
-                    visitedNodes.add(nodeNumber);
-                    if (nodeNumber == destination) {
-                        break OUTER;
+                        visitedNodes.add(nodeNumber);
+                        if (nodeNumber == destination) {
+                            return true;
+                        }
                     }
+                    i--;
                 }
-                i--;
+            } else {
+                while (i >= smallestNode - 1) {//ERROR IF START AT ZERO. ELSE WORKS GOOD. IF REMOVE EQUALS SIGN, THEN ZERO WILL NOT BE PRINTED IF NOT STARTING AT ZERO
+                    if (g.isConnected(nodeNumber, i) && visited[i] == 0) {
+                        steps += stepStack.push(g.getCostMatrix(nodeNumber, i));
+                        nodeStack.push(i);
+
+                        visited[i] = 1;
+                        nodeNumber = i;
+                        smallestNode = 1;
+
+                        visitedNodes.add(nodeNumber);
+                        if (nodeNumber == destination) {
+                            return true;
+                        }
+                    }
+                    i--;
+                }
             }
+
             nodeNumber = nodeStack.peek();
             i = nodeNumber;
 
-            while (i <= vertices-1) {
-
-                if (adjacency_matrix[nodeNumber][i] == 1 && visited[i] == 0) {
-                    steps+=stepStack.push(g.getCostMatrix(nodeNumber, i));
+            while (i <= vertices - 1) {
+                if (g.isConnected(nodeNumber, i) && visited[i] == 0) {
+                    steps += stepStack.push(g.getCostMatrix(nodeNumber, i));
                     nodeStack.push(i);
 
                     visited[i] = 1;
                     nodeNumber = i;
                     i = 1;
-                    //System.out.print(element + "\t");
                     visitedNodes.add(nodeNumber);
                     if (nodeNumber == destination) {
-                        break OUTER;
+                        return true;
                     }
                 }
                 i++;
             }
             nodeStack.pop();
-            if(!stepStack.isEmpty())
-            steps += stepStack.pop();
+            if (!stepStack.isEmpty()) {
+                steps += stepStack.pop();
+            }
         }
+        return false;
+
     }
 
     static void addInfoToLists() {
@@ -176,10 +193,12 @@ public class Main {
         original.remove(0);
         for (int i = 0; i < elements.size(); i += 3) {
             fromNode.add(Integer.parseInt(elements.get(i)));
+            fromNodeSort.add(Integer.parseInt(elements.get(i)));
         }
 
         for (int i = 1; i < elements.size(); i += 3) {
             toNode.add(Integer.parseInt(elements.get(i)));
+            toNodeSort.add(Integer.parseInt(elements.get(i)));
         }
 
         for (int i = 2; i < elements.size(); i += 3) {
