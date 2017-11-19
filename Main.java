@@ -60,14 +60,16 @@ public class Main {
             smallestNode = fromNodeSort.get(0);
         }
 
-        //g = new Graph(vertices);
+        
         g = new Graph(vertices);
 
         for (int i = 0; i < toNode.size(); i++) {
             g.addEdge(fromNode.get(i), toNode.get(i), cost.get(i));
         }
-
+        //g.displayMatrix();
+        //System.out.println();
         long start = System.nanoTime();
+       
         if (foundNode()) {
             long end = System.nanoTime();
             String output = "";
@@ -92,7 +94,8 @@ public class Main {
                     output += "and " + visitedNodes.get(i);
                 }
             }
-            System.out.println("Me no find adventurers. Me bring shame to me family.\nMe searched rooms " + output + ". Me took " + steps + " steps.\n\nMe walked around labyrinth for "
+            System.out.println("Moo! Me no find adventurers! Me bring shame to me family...\nMe searched rooms " + output
+                    + ". Me took " + steps + " steps.\n\nMe walked around labyrinth for "
                     + (end - start) / 1000000.0 + " milliseconds but me no find adventurers.");
         }
 
@@ -116,15 +119,18 @@ public class Main {
         while (!nodeStack.isEmpty()) {
             nodeNumber = nodeStack.peek();
             i = nodeNumber;
+            //System.out.println(smallestNode);
             if (source == 0) {
-                while (i > smallestNode - 1) {//
+            //if(Math.abs(source-destination)==1){
+                while (i > smallestNode - 1) {//ERROR IF START AT ZERO. ELSE WORKS GOOD. IF REMOVE EQUALS SIGN, THEN ZERO WILL NOT BE PRINTED IF NOT STARTING AT ZERO
                     if (g.isConnected(nodeNumber, i) && visited[i] == 0) {
-                        steps += stepStack.push(g.getCostMatrix(nodeNumber, i));
+                        steps += stepStack.push(g.getCostMatrixValueAt(nodeNumber, i));
                         nodeStack.push(i);
 
                         visited[i] = 1;
                         nodeNumber = i;
-                        smallestNode = 1;
+                        //smallestNode = 1;
+                        smallestNode=0;
 
                         visitedNodes.add(nodeNumber);
                         if (nodeNumber == destination) {
@@ -133,15 +139,17 @@ public class Main {
                     }
                     i--;
                 }
+                
             } else {
-                while (i >= smallestNode - 1) {//
+                while (i >= smallestNode) {//ERROR IF START AT ZERO. ELSE WORKS GOOD. IF REMOVE EQUALS SIGN, THEN ZERO WILL NOT BE PRINTED IF NOT STARTING AT ZERO
+                    
                     if (g.isConnected(nodeNumber, i) && visited[i] == 0) {
-                        steps += stepStack.push(g.getCostMatrix(nodeNumber, i));
+                        steps += stepStack.push(g.getCostMatrixValueAt(nodeNumber, i));
                         nodeStack.push(i);
 
                         visited[i] = 1;
                         nodeNumber = i;
-                        smallestNode = 1;
+                        smallestNode = 0;
 
                         visitedNodes.add(nodeNumber);
                         if (nodeNumber == destination) {
@@ -157,7 +165,7 @@ public class Main {
 
             while (i <= vertices - 1) {
                 if (g.isConnected(nodeNumber, i) && visited[i] == 0) {
-                    steps += stepStack.push(g.getCostMatrix(nodeNumber, i));
+                    steps += stepStack.push(g.getCostMatrixValueAt(nodeNumber, i));
                     nodeStack.push(i);
 
                     visited[i] = 1;
