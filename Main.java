@@ -117,7 +117,7 @@ public class Main {
             nodeNumber = nodeStack.peek();
             i = nodeNumber;
             if (source == 0) {
-                while (i > smallestNode - 1) {//ERROR IF START AT ZERO. ELSE WORKS GOOD. IF REMOVE EQUALS SIGN, THEN ZERO WILL NOT BE PRINTED IF NOT STARTING AT ZERO
+                while (i > smallestNode - 1) {//
                     if (g.isConnected(nodeNumber, i) && visited[i] == 0) {
                         steps += stepStack.push(g.getCostMatrix(nodeNumber, i));
                         nodeStack.push(i);
@@ -134,7 +134,7 @@ public class Main {
                     i--;
                 }
             } else {
-                while (i >= smallestNode - 1) {//ERROR IF START AT ZERO. ELSE WORKS GOOD. IF REMOVE EQUALS SIGN, THEN ZERO WILL NOT BE PRINTED IF NOT STARTING AT ZERO
+                while (i >= smallestNode - 1) {//
                     if (g.isConnected(nodeNumber, i) && visited[i] == 0) {
                         steps += stepStack.push(g.getCostMatrix(nodeNumber, i));
                         nodeStack.push(i);
