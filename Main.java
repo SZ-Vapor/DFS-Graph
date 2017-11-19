@@ -21,7 +21,6 @@ public class Main {
     static ArrayList<Integer> fromNode = new ArrayList<Integer>();
     static ArrayList<Integer> toNode = new ArrayList<Integer>();
     static ArrayList<Integer> cost = new ArrayList<Integer>();
-    static int steps;
     static int vertices;
     static Graph g;
 
@@ -63,7 +62,7 @@ public class Main {
         g.addEdge(0, 4, 3);
         g.addEdge(4, 3, 5);
         g.addEdge(3, 5, 1);
-
+        
         g.addEdge(1, 6, 7);
         g.addEdge(6, 7, 4);
 
@@ -85,30 +84,45 @@ public class Main {
         System.out.print(element + "\t");
         visited[source] = 1;
         nodeStack.push(source);
-
+        OUTER:
         while (!nodeStack.isEmpty()) {
             element = nodeStack.peek();
             i = element;
-
+           
             while (i <= number_of_nodes) {
 
                 if (adjacency_matrix[element][i] == 1 && visited[i] == 0) {
 
+                    
                     steps += stepStack.push(g.costMatrix[element][i]);
                     nodeStack.push(i);
+                    
+                    
 
                     visited[i] = 1;
-                    
+                    //steps+=g.costMatrix[stack.peek()][i];
+
                     element = i;
+
                     i = 1;
                     System.out.print(element + "\t");
-                }
+                    if (element == destination) {
+                        break OUTER;
+                    }
 
+                   // if (element != destination) {
+                    //steps += stepStack.pop();
+                     //}
+                    //System.out.println("\nSteps:"+steps);
+                    //continue;
+                }
+                
                 i++;
             }
-
+            
             nodeStack.pop();
             steps += stepStack.pop();
+            
 
         }
 
@@ -125,7 +139,7 @@ public class Main {
                 elements.add(line);
             }
         }
-        vertices = Integer.parseInt(original.get(0));
+        //vertices = Integer.parseInt(original.get(0));
         elements.remove(0);
         original.remove(0);
         for (int i = 0; i < elements.size(); i += 3) {
