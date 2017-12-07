@@ -51,10 +51,8 @@ public class Graph {
     }
     
     public void displayMatrix(){
-        System.out.print("    ");
-        for(int i=0;i<size;i++){
-            System.out.print(String.format("%4s", i));
-        }
+        System.out.println("ADJACENCY MATRIX: ");
+        
         System.out.println();
         
         for(int i=0;i<size;i++){
@@ -66,7 +64,7 @@ public class Graph {
     }
     
     public void displayCostMatrix(){
-        System.out.print("COST MATRIX: ");
+        System.out.println("COST MATRIX: ");
         
         System.out.println();
         
