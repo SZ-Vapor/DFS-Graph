@@ -7,7 +7,7 @@ import java.util.Stack;
 
 /**
  *
- * @author Steven Hogenson
+ * @author
  */
 public class Main {
 
